@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: devops-cicd-hpa
+  name: local-devops-platform-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: devops-cicd-deployment
+    name: local-devops-platform-deployment
   minReplicas: 2
   maxReplicas: 5
   metrics:

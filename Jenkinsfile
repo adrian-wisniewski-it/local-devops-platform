@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_REPO = 'adrianwisniewskiit/devops-cicd-pipeline'                                  // <- change to your Docker Hub repo
-        GIT_REPO   = 'https://github.com/adrian-wisniewski-it/devops-cicd-pipeline.git'         // <- change to your GitHub repo URL
+        IMAGE_REPO = 'adrianwisniewskiit/local-devops-platform'                                  // <- change to your Docker Hub repo
+        GIT_REPO   = 'https://github.com/adrian-wisniewski-it/local-devops-platform.git'         // <- change to your GitHub repo URL
     }
 
     stages {
@@ -44,10 +44,10 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh """
-                microk8s.kubectl apply -f k8s/deployment.yaml
-                microk8s.kubectl set image deployment/devops-cicd-deployment devops-cicd=${IMAGE_REPO}:${BUILD_NUMBER}
-                microk8s.kubectl apply -f k8s/service.yaml
-                microk8s.kubectl apply -f k8s/hpa.yaml
+                microk8s.kubectl apply -f kubernetes/deployment.yaml
+                microk8s.kubectl set image deployment/local-devops-platform-deployment local-devops-platform=${IMAGE_REPO}:${BUILD_NUMBER}
+                microk8s.kubectl apply -f kubernetes/service.yaml
+                microk8s.kubectl apply -f kubernetes/hpa.yaml
                 """
             }
         }
@@ -55,7 +55,7 @@ pipeline {
 
     post {
         failure {
-            sh 'microk8s.kubectl rollout undo deployment/devops-cicd-deployment || true'
+            sh 'microk8s.kubectl rollout undo deployment/local-devops-platform-deployment || true'
         }
         always {
             sh 'docker system prune -af || true'

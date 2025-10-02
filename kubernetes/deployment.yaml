@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: devops-cicd-deployment
+  name: local-devops-platform-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: devops-cicd
+      app: local-devops-platform
   template:
     metadata:
       labels:
-        app: devops-cicd
+        app: local-devops-platform
     spec:
       containers:
-        - name: devops-cicd
-          image: adrianwisniewskiit/devops-cicd-pipeline:latest
+        - name: local-devops-platform
+          image: adrianwisniewskiit/local-devops-platform:latest
           ports:
             - containerPort: 5000
           readinessProbe:
