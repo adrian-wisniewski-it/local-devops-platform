@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: localdevopsplatform-{{ .Values.environment }}-config
+  labels:
+    app: local-devops-platform
+    environment: {{ .Values.environment }}
+data:
+  DB_HOST: local-devops-platform-db
+  DB_NAME: localdevopsplatform

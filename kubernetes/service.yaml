@@ -4,6 +4,10 @@ metadata:
   name: local-devops-platform-service
   labels:
     app: local-devops-platform
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "5000"
 spec:
   type: ClusterIP
   selector:
