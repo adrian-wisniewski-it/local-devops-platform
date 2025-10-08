@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: localdevopsplatform-db-config
+data:
+  DB_HOST: "localdevopsplatform-postgres"
+  DB_NAME: "localdevopsplatform"
