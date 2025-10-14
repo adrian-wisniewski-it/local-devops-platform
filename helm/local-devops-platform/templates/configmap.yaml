@@ -6,5 +6,5 @@ metadata:
     app: local-devops-platform
     environment: {{ .Values.environment }}
 data:
-  DB_HOST: local-devops-platform-db
+  DB_HOST: postgresql-{{ .Values.environment }}
   DB_NAME: localdevopsplatform
