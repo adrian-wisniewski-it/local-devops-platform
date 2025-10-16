@@ -2,8 +2,8 @@ pipeline {
     agent any
     
     environment {
-        IMAGE_REPO = 'adrianwisniewskiit/local-devops-platform'
-        GIT_REPO   = 'https://github.com/adrian-wisniewski-it/local-devops-platform.git'
+        IMAGE_REPO = 'adrianwisniewskiit/local-devops-platform'                                // <- change to your Docker Hub repository
+        GIT_REPO   = 'https://github.com/adrian-wisniewski-it/local-devops-platform.git'       // <- change to your Git repository
     }
 
     stages {
