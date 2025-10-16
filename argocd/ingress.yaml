@@ -1,21 +1,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: local-devops-platform-ingress
-  labels:
-    app: local-devops-platform
+  name: argocd-ingress
+  namespace: argocd
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
+  ingressClassName: nginx
   rules:
-    # Flask Application
-    - host: localdevopsplatform.local
+    - host: argocd.local
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: local-devops-platform-service
+                name: argocd-server
                 port:
                   number: 80

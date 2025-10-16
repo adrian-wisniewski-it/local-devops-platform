@@ -58,7 +58,7 @@ echo "--------------------------------------"
 
 # Apply ingress and application manifests
 echo "Applying ingress and application manifests..."
-microk8s kubectl apply -f kubernetes/ingress.yaml
+microk8s kubectl apply -f argocd/ingress.yaml
 microk8s kubectl apply -f argocd/application.yaml
 echo "Manifests applied successfully."
 
