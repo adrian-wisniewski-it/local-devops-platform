@@ -55,6 +55,13 @@ else
     echo "Entry for localdevopsplatform.local already exists in /etc/hosts. Skipping."
 fi
 
+if ! grep -q "argocd.local" /etc/hosts; then
+    echo "127.0.0.1 argocd.local" >> /etc/hosts
+    echo "Successfully added argocd.local entry to /etc/hosts."
+else
+    echo "Entry for argocd.local already exists in /etc/hosts. Skipping."
+fi
+
 echo "--------------------------------------"
 echo "PART 1 completed."
 echo "--------------------------------------"

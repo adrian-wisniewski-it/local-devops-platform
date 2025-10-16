@@ -81,6 +81,18 @@ else
 fi
 
 echo "---------------------------------------"
+
+# Create Kubernetes secret for database credentials
+echo "Creating secret for database credentials..."
+microk8s kubectl create secret generic "localdevopsplatform-${ENVIRONMENT}-secret" \
+  --from-literal=DB_USER="$DB_USER" \
+  --from-literal=DB_PASS="$DB_PASS" \
+  --namespace "$POSTGRES_NAMESPACE" \
+  --dry-run=client -o yaml | microk8s kubectl apply -f -
+echo "Secret for database credentials created successfully."
+
+
+echo "---------------------------------------"
 echo "PostgreSQL setup completed."
 echo "Namespace: $POSTGRES_NAMESPACE"
 echo "Release: $POSTGRES_RELEASE"

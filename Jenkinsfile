@@ -6,14 +6,6 @@ pipeline {
         GIT_REPO   = 'https://github.com/adrian-wisniewski-it/local-devops-platform.git'
     }
 
-    parameters {
-        choice(
-            name: 'ENV',
-            choices: ['dev', 'prod'],
-            description: 'Choose deployment environment'
-        )
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -59,45 +51,32 @@ pipeline {
             }
         }
 
-        stage('Deploy with Helm') {
+        stage('Notify ArgoCD') {
             steps {
-                echo "Deploying to ${params.ENV} environment using Helm..."
-                withCredentials([
-                    string(credentialsId: "DB_USER_${params.ENV}", variable: 'DB_USER'),
-                    string(credentialsId: "DB_PASS_${params.ENV}", variable: 'DB_PASS')
-                ]) {
-                    sh """
-                        RELEASE_NAME="localdevopsplatform-${params.ENV}"
-                        
-                        microk8s helm upgrade --install \${RELEASE_NAME} ./helm/local-devops-platform \
-                            --set image.repository=${IMAGE_REPO} \
-                            --set image.tag=${BUILD_NUMBER} \
-                            --set environment=${params.ENV} \
-                            --set secrets.DB_USER=\${DB_USER} \
-                            --set secrets.DB_PASS=\${DB_PASS} \
-                            --namespace default \
-                            --wait \
-                            --timeout 5m
-                    """
-                    echo "Application deployed successfully to ${params.ENV}."
-                }
+                echo "Notifying ArgoCD about new deployment..."
+                sh """
+                    microk8s kubectl patch application local-devops-platform \
+                        -n argocd \
+                        --type merge \
+                        -p '{"metadata":{"annotations":{"argocd.argoproj.io/refresh":"hard"}}}' || true
+                """
+                echo "ArgoCD notified successfully."
             }
         }
     }
 
     post {
-        failure {
-            echo "Deployment failed. Rolling back to previous version..."
-            sh """
-                microk8s helm rollback localdevopsplatform-${params.ENV} --namespace default || true
-            """
-            echo "Rollback completed."
-        }
         always {
             echo "Cleaning up Docker resources..."
             sh 'docker system prune -af || true'
             sh 'docker logout || true'
             echo "Cleanup completed."
+        }
+        success {
+            echo "Pipeline completed successfully!"
+        }
+        failure {
+            echo "Pipeline failed. Please check the logs for details."
         }
     }
 }
