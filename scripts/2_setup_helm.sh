@@ -64,7 +64,6 @@ chmod 600 .db_credentials
 echo "Database credentials saved to .db_credentials file."
 
 echo "--------------------------------------"
-echo "Helm setup completed successfully!"
+echo "Helm setup complete."
 echo "--------------------------------------"
-
 

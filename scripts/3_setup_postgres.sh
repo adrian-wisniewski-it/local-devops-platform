@@ -91,14 +91,6 @@ microk8s kubectl create secret generic "localdevopsplatform-${ENVIRONMENT}-secre
   --dry-run=client -o yaml | microk8s kubectl apply -f -
 echo "Secret for database credentials created successfully."
 
-
-echo "---------------------------------------"
-echo "PostgreSQL setup completed."
-echo "Namespace: $POSTGRES_NAMESPACE"
-echo "Release: $POSTGRES_RELEASE"
-echo "User: $DB_USER"
-echo "Database: localdevopsplatform"
-echo "Host: ${POSTGRES_RELEASE}.${POSTGRES_NAMESPACE}.svc.cluster.local"
 echo "---------------------------------------"
 
 # Cleanup temporary credentials file
@@ -107,4 +99,7 @@ if [ -f ".db_credentials" ]; then
     echo "Temporary .db_credentials file securely deleted."
 fi
 
+echo "--------------------------------------"
+echo "PostgreSQL setup complete."
+echo "You can access PostgreSQL at: ${POSTGRES_RELEASE}.${POSTGRES_NAMESPACE}.svc.cluster.local"
 echo "--------------------------------------"

@@ -63,7 +63,5 @@ else
 fi
 
 echo "--------------------------------------"
-echo "PART 1 completed."
-echo "--------------------------------------"
-echo "If you are not root, log out and log back in so group changes take effect."
+echo "Environment setup complete."
 echo "--------------------------------------"

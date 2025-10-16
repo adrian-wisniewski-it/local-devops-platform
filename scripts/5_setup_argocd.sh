@@ -37,10 +37,14 @@ if helm list -n "$ARGOCD_NAMESPACE" -q | grep -q "^${ARGOCD_RELEASE}$"; then
     echo "ArgoCD release $ARGOCD_RELEASE already exists in namespace $ARGOCD_NAMESPACE. Skipping installation."
 else
     echo "Installing ArgoCD in namespace $ARGOCD_NAMESPACE..."
+    read -s -p "Enter ArgoCD admin password: " ARGOCD_PASS
+    echo ""
+    ARGOCD_PASS_HASH=$(docker run --rm python:3.9-slim python -c "import bcrypt; print(bcrypt.hashpw(b'$ARGOCD_PASS', bcrypt.gensalt()).decode())")
     helm install "$ARGOCD_RELEASE" argo/argo-cd \
         --namespace "$ARGOCD_NAMESPACE" \
         --set server.service.type=ClusterIP \
-        --set configs.params."server\.insecure"=true
+        --set configs.params."server\.insecure"=true \
+        --set configs.secret.argocdServerAdminPassword="$ARGOCD_PASS_HASH"
     echo "ArgoCD installed successfully."
 fi
 
@@ -65,6 +69,4 @@ echo "Manifests applied successfully."
 echo "--------------------------------------"
 echo "ArgoCD setup complete."
 echo "You can access ArgoCD at: http://argocd.local:8000"
-echo "To retrieve the initial admin password, run:"
-echo "microk8s kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d && echo"
 echo "--------------------------------------"
