@@ -61,8 +61,4 @@ fi
 echo "--------------------------------------"
 echo "Jenkins setup complete."
 echo "You can access Jenkins at: http://localhost:8080"
-echo "To retrieve the initial admin password, run:"
-echo "  sudo cat /var/lib/jenkins/secrets/initialAdminPassword"
 echo "--------------------------------------"
-
-

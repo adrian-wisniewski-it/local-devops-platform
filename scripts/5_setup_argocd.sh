@@ -37,13 +37,10 @@ if helm list -n "$ARGOCD_NAMESPACE" -q | grep -q "^${ARGOCD_RELEASE}$"; then
     echo "ArgoCD release $ARGOCD_RELEASE already exists in namespace $ARGOCD_NAMESPACE. Skipping installation."
 else
     echo "Installing ArgoCD in namespace $ARGOCD_NAMESPACE..."
-    read -s -p "Enter ArgoCD admin password: " ARGOCD_PASS
-    echo ""
     helm install "$ARGOCD_RELEASE" argo/argo-cd \
         --namespace "$ARGOCD_NAMESPACE" \
         --set server.service.type=ClusterIP \
-        --set configs.params."server\.insecure"=true \
-        --set configs.secret.argocdServerAdminPassword="$ARGOCD_PASS"
+        --set configs.params."server\.insecure"=true
     echo "ArgoCD installed successfully."
 fi
 

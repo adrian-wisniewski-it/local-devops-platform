@@ -38,12 +38,9 @@ if helm list -n "$MONITORING_NAMESPACE" -q | grep -q "^${KUBE_PROM_STACK_RELEASE
     echo "kube-prometheus-stack release $KUBE_PROM_STACK_RELEASE already exists in namespace $MONITORING_NAMESPACE. Skipping installation."
 else
     echo "Installing kube-prometheus-stack in namespace $MONITORING_NAMESPACE..."
-    read -s -p "Enter Grafana admin password: " GRAFANA_PASS
-    echo ""
     helm install "$KUBE_PROM_STACK_RELEASE" prometheus-community/kube-prometheus-stack \
         --namespace "$MONITORING_NAMESPACE" \
-        --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
-        --set grafana.adminPassword="$GRAFANA_PASS"
+        --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
     echo "kube-prometheus-stack installed successfully."
 fi
 
@@ -83,8 +80,6 @@ echo "--------------------------------------"
 echo "Applying monitoring ingress manifest..."
 microk8s kubectl apply -f monitoring/ingress.yaml
 echo "Monitoring ingress applied successfully."
-
-echo "--------------------------------------"
 
 # Apply ServiceMonitor manifest
 echo "Applying ServiceMonitor manifest..."

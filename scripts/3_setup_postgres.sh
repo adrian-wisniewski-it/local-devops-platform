@@ -59,7 +59,7 @@ microk8s kubectl wait \
   -l app.kubernetes.io/name=postgresql \
   --timeout=180s || echo "PostgreSQL pod readiness check timed out."
 
-echo "---------------------------------------"
+echo "--------------------------------------"
 
 # Initialize database schema if init.sql file exists
 if [ -f "./app/init.sql" ]; then
@@ -80,7 +80,7 @@ else
     echo "No init.sql file found. Skipping database schema initialization."    
 fi
 
-echo "---------------------------------------"
+echo "--------------------------------------"
 
 # Create Kubernetes secret for database credentials
 echo "Creating secret for database credentials..."
@@ -90,14 +90,6 @@ microk8s kubectl create secret generic "localdevopsplatform-${ENVIRONMENT}-secre
   --namespace "$POSTGRES_NAMESPACE" \
   --dry-run=client -o yaml | microk8s kubectl apply -f -
 echo "Secret for database credentials created successfully."
-
-echo "---------------------------------------"
-
-# Cleanup temporary credentials file
-if [ -f ".db_credentials" ]; then
-    shred -u .db_credentials
-    echo "Temporary .db_credentials file securely deleted."
-fi
 
 echo "--------------------------------------"
 echo "PostgreSQL setup complete."
