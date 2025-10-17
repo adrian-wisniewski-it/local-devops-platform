@@ -62,6 +62,20 @@ else
     echo "Entry for argocd.local already exists in /etc/hosts. Skipping."
 fi
 
+if ! grep -q "prometheus.local" /etc/hosts; then
+    echo "127.0.0.1 prometheus.local" >> /etc/hosts
+    echo "Successfully added prometheus.local entry to /etc/hosts."
+else
+    echo "Entry for prometheus.local already exists in /etc/hosts. Skipping."
+fi  
+
+if ! grep -q "grafana.local" /etc/hosts; then
+    echo "127.0.0.1 grafana.local" >> /etc/hosts
+    echo "Successfully added grafana.local entry to /etc/hosts."
+else
+    echo "Entry for grafana.local already exists in /etc/hosts. Skipping."
+fi
+
 echo "--------------------------------------"
 echo "Environment setup complete."
 echo "--------------------------------------"
