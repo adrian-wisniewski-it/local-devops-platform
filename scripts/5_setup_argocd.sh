@@ -39,12 +39,11 @@ else
     echo "Installing ArgoCD in namespace $ARGOCD_NAMESPACE..."
     read -s -p "Enter ArgoCD admin password: " ARGOCD_PASS
     echo ""
-    ARGOCD_PASS_HASH=$(docker run --rm python:3.9-slim python -c "import bcrypt; print(bcrypt.hashpw(b'$ARGOCD_PASS', bcrypt.gensalt()).decode())")
     helm install "$ARGOCD_RELEASE" argo/argo-cd \
         --namespace "$ARGOCD_NAMESPACE" \
         --set server.service.type=ClusterIP \
         --set configs.params."server\.insecure"=true \
-        --set configs.secret.argocdServerAdminPassword="$ARGOCD_PASS_HASH"
+        --set configs.secret.argocdServerAdminPassword="$ARGOCD_PASS"
     echo "ArgoCD installed successfully."
 fi
 
