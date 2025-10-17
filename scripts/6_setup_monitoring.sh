@@ -69,13 +69,13 @@ microk8s kubectl wait \
     --namespace "$MONITORING_NAMESPACE" \
     --for=condition=ready pod \
     -l app.kubernetes.io/name=prometheus \
-    --timeout=180s || echo "Prometheus pod readiness check timed out."
+    --timeout=300s || echo "Prometheus pod readiness check timed out."
 
 microk8s kubectl wait \
     --namespace "$MONITORING_NAMESPACE" \
     --for=condition=ready pod \
     -l app.kubernetes.io/name=grafana \
-    --timeout=180s || echo "Grafana pod readiness check timed out."
+    --timeout=300s || echo "Grafana pod readiness check timed out."
 
 echo "--------------------------------------"
 
