@@ -54,6 +54,12 @@ def update_metrics():
     except Exception as e:
         app.logger.error(f"Metrics update error: {e}")
 
+@app.before_request
+def before_metrics_request():
+    from flask import request
+    if request.path == '/metrics':
+        update_metrics()
+
 @app.route("/")
 def home():
     return "Local DevOps Platform with CI/CD, GitOps and Observability"
