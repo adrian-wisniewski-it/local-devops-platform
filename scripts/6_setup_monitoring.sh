@@ -85,6 +85,13 @@ microk8s kubectl apply -f monitoring/ingress.yaml
 echo "Monitoring ingress applied successfully."
 
 echo "--------------------------------------"
+
+# Apply ServiceMonitor manifest
+echo "Applying ServiceMonitor manifest..."
+microk8s kubectl apply -f monitoring/servicemonitor.yaml
+echo "ServiceMonitor applied successfully."
+
+echo "--------------------------------------"
 echo "Monitoring setup complete."
 echo "You can access Grafana at: http://grafana.local:8000"
 echo "You can access Prometheus at: http://prometheus.local:8000"
