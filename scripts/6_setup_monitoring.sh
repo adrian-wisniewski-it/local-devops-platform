@@ -20,7 +20,8 @@ fi
 
 MONITORING_NAMESPACE="monitoring"
 KUBE_PROM_STACK_RELEASE="kube-prometheus-stack"
-LOKI_STACK_RELEASE="loki-stack"
+LOKI_RELEASE="loki"
+PROMTAIL_RELEASE="promtail"
 
 # Create monitoring namespace if it doesn't exist
 if ! microk8s kubectl get namespace "$MONITORING_NAMESPACE" &> /dev/null; then
@@ -35,27 +36,49 @@ echo "--------------------------------------"
 
 # Install kube-prometheus-stack using Helm if not already installed
 if helm list -n "$MONITORING_NAMESPACE" -q | grep -q "^${KUBE_PROM_STACK_RELEASE}$"; then
-    echo "kube-prometheus-stack release $KUBE_PROM_STACK_RELEASE already exists in namespace $MONITORING_NAMESPACE. Skipping installation."
+    echo "kube-prometheus-stack already installed. Skipping."
 else
-    echo "Installing kube-prometheus-stack in namespace $MONITORING_NAMESPACE..."
+    echo "Installing kube-prometheus-stack..."
     helm install "$KUBE_PROM_STACK_RELEASE" prometheus-community/kube-prometheus-stack \
         --namespace "$MONITORING_NAMESPACE" \
         --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
-    echo "kube-prometheus-stack installed successfully."
+    echo "kube-prometheus-stack installed."
 fi
 
 echo "--------------------------------------"
 
-# Install loki-stack using Helm if not already installed
-if helm list -n "$MONITORING_NAMESPACE" -q | grep -q "^${LOKI_STACK_RELEASE}$"; then
-    echo "loki-stack release $LOKI_STACK_RELEASE already exists in namespace $MONITORING_NAMESPACE. Skipping installation."
+# Install Loki using Helm if not already installed
+if helm list -n "$MONITORING_NAMESPACE" -q | grep -q "^${LOKI_RELEASE}$"; then
+    echo "Loki already installed. Skipping."
 else
-    echo "Installing loki-stack in namespace $MONITORING_NAMESPACE..."
-    helm install "$LOKI_STACK_RELEASE" grafana/loki-stack \
+    echo "Installing Loki..."
+    helm install "$LOKI_RELEASE" grafana/loki \
         --namespace "$MONITORING_NAMESPACE" \
-        --set promtail.enabled=true \
-        --set loki.persistence.enabled=false
-    echo "loki-stack installed successfully."
+        --set deploymentMode=SingleBinary \
+        --set loki.auth_enabled=false \
+        --set loki.commonConfig.replication_factor=1 \
+        --set loki.storage.type=filesystem \
+        --set loki.useTestSchema=true \
+        --set singleBinary.replicas=1 \
+        --set write.replicas=0 \
+        --set read.replicas=0 \
+        --set backend.replicas=0 \
+        --set chunksCache.enabled=false \
+        --set resultsCache.enabled=false
+    echo "Loki installed."
+fi
+
+echo "--------------------------------------"
+
+# Install Promtail using Helm if not already installed
+if helm list -n "$MONITORING_NAMESPACE" -q | grep -q "^${PROMTAIL_RELEASE}$"; then
+    echo "Promtail already installed. Skipping."
+else
+    echo "Installing Promtail..."
+    helm install "$PROMTAIL_RELEASE" grafana/promtail \
+        --namespace "$MONITORING_NAMESPACE" \
+        --set "config.clients[0].url=http://loki:3100/loki/api/v1/push"
+    echo "Promtail installed."
 fi
 
 echo "--------------------------------------"
