@@ -99,18 +99,14 @@ microk8s kubectl wait \
 
 echo "--------------------------------------"
 
-# Apply monitoring ingress manifest
-echo "Applying monitoring ingress manifest..."
-microk8s kubectl apply -f monitoring/ingress.yaml
-echo "Monitoring ingress applied successfully."
-
-# Apply ServiceMonitor manifest
-echo "Applying ServiceMonitor manifest..."
-microk8s kubectl apply -f monitoring/servicemonitor.yaml
-echo "ServiceMonitor applied successfully."
+# Apply monitoring infrastructure ingress
+echo "Applying monitoring infrastructure ingress..."
+microk8s kubectl apply -f kubernetes/monitoring/ingress.yaml
+echo "Monitoring infrastructure ingress applied successfully."
 
 echo "--------------------------------------"
-echo "Monitoring setup complete."
+echo "Monitoring infrastructure setup complete."
 echo "You can access Grafana at: http://grafana.local:8000"
 echo "You can access Prometheus at: http://prometheus.local:8000"
+echo "You can access Alertmanager at: http://alertmanager.local:8000"
 echo "--------------------------------------"
