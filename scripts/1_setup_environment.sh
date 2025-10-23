@@ -76,6 +76,13 @@ else
     echo "Entry for grafana.local already exists in /etc/hosts. Skipping."
 fi
 
+if ! grep -q "alertmanager.local" /etc/hosts; then
+    echo "127.0.0.1 alertmanager.local" >> /etc/hosts
+    echo "Successfully added alertmanager.local entry to /etc/hosts."
+else
+    echo "Entry for alertmanager.local already exists in /etc/hosts. Skipping."
+fi
+
 echo "--------------------------------------"
 echo "Environment setup complete."
 echo "--------------------------------------"
