@@ -1,0 +1,49 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: local-devops-platform-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+    app: local-devops-platform
+    environment: {{ .Values.environment }}
+spec:
+  groups:
+    - name: local-devops-platform-alerts
+      interval: 30s
+      rules:
+        # Alert: App is down
+        - alert: ApplicationDown
+          expr: up{job="local-devops-platform-service"} == 0
+          for: 1m
+          labels:
+            severity: critical
+            app: local-devops-platform
+            environment: {{ .Values.environment }}
+          annotations:
+            summary: "Application local-devops-platform is down"
+            description: "The local-devops-platform application in {{ .Values.environment }} has been down for more than 1 minute."
+        
+        # Alert: High CPU usage
+        - alert: HighCPUUsage
+          expr: rate(process_cpu_seconds_total{job="local-devops-platform-service"}[5m]) > {{ .Values.alerts.cpuThreshold }}
+          for: 2m
+          labels:
+            severity: warning
+            app: local-devops-platform
+            environment: {{ .Values.environment }}
+          annotations:
+            summary: "High CPU usage detected for local-devops-platform"
+            description: "CPU usage is above {{ .Values.alerts.cpuThreshold | int | mul 100 }}% for more than 2 minutes in {{ .Values.environment }}."
+        
+        # Alert: High memory usage
+        - alert: HighMemoryUsage
+          expr: process_resident_memory_bytes{job="local-devops-platform-service"} / 1024 / 1024 > {{ .Values.alerts.memoryThresholdMB }}
+          for: 2m
+          labels:
+            severity: warning
+            app: local-devops-platform
+            environment: {{ .Values.environment }}
+          annotations:
+            summary: "High memory usage detected for local-devops-platform"
+            description: "Memory usage is above {{ .Values.alerts.memoryThresholdMB }}MB for more than 2 minutes in {{ .Values.environment }}."

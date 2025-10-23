@@ -51,3 +51,7 @@ livenessProbe:
   periodSeconds: 20
   timeoutSeconds: 1
   failureThreshold: 3
+
+alerts:
+  cpuThreshold: 0.8     
+  memoryThresholdMB: 200 
