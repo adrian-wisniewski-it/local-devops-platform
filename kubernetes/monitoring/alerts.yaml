@@ -1,0 +1,41 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: local-devops-platform-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: application-alerts
+      interval: 30s
+      rules:
+        # Alert: App is down
+        - alert: ApplicationDown
+          expr: up{job="local-devops-platform-service"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Application is down"
+            description: "The local-devops-platform application has been down for more than 1 minute."
+        
+        # Alert: High CPU usage
+        - alert: HighCPUUsage
+          expr: rate(process_cpu_seconds_total{job="local-devops-platform-service"}[5m]) > 0.8
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High CPU usage detected"
+            description: "CPU usage is above 80% for more than 2 minutes."
+        
+        # Alert: High memory usage
+        - alert: HighMemoryUsage
+          expr: process_resident_memory_bytes{job="local-devops-platform-service"} / 1024 / 1024 > 200
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High memory usage detected"
+            description: "Memory usage is above 200MB for more than 2 minutes."
